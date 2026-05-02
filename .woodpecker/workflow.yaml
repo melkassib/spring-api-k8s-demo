@@ -1,0 +1,35 @@
+when:
+  - event: [push, manual]
+    branch: main
+  - event: manual
+
+steps:
+  - name: gradle-build
+    image: eclipse-temurin:25-jdk-alpine
+    commands:
+      - ./gradlew bootJar -x test
+
+  - name: image-build-and-push
+    image: woodpeckerci/plugin-kaniko
+    settings:
+      registry: registry.melkassib.dev
+      repo: registry.melkassib.dev/spring-api-k8s-demo
+      dockerfile: Dockerfile
+      context: .
+      tags:
+        - latest
+        - ${CI_COMMIT_SHA_SHORT}
+
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+
+      build_args:
+        - JAR_FILE=build/libs/*.jar
+
+      snapshot_mode: redo
+      use_new_run: true
+
+      cache: true
+      cache_repo: registry.melkassib.dev/kaniko-cache
