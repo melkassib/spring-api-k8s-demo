@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.melkassib"
-version = "0.0.1-SNAPSHOT"
+version = "0.1.0"
 description = "spring-api-k8s-demo"
 
 java {
