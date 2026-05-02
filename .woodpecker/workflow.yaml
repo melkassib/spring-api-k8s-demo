@@ -13,12 +13,12 @@ steps:
     image: woodpeckerci/plugin-kaniko
     settings:
       registry: registry.melkassib.dev
-      repo: registry.melkassib.dev/spring-api-k8s-demo
+      repo: spring-api-k8s-demo
       dockerfile: Dockerfile
       context: .
       tags:
         - latest
-        - ${CI_COMMIT_SHA_SHORT}
+        - ${CI_COMMIT_SHA:0:7}
 
       username:
         from_secret: docker_username
