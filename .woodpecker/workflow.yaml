@@ -1,13 +1,22 @@
 when:
   - event: [push, manual]
     branch: main
-  - event: manual
+
+volumes:
+  - name: gradle-cache
+    driver: local
 
 steps:
   - name: gradle-build
     image: eclipse-temurin:25-jdk-alpine
+    volumes:
+      - name: gradle-cache
+        path: /root/.gradle
+    environment:
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.parallel=false -Xmx1g"
+      GRADLE_USER_HOME: "/root/.gradle"
     commands:
-      - ./gradlew bootJar -x test
+      - ./gradlew bootJar -x test --build-cache --no-daemon
 
   - name: image-build-and-push
     image: woodpeckerci/plugin-kaniko
